@@ -1,0 +1,2 @@
+movement_id,bihin_id,when_moved,who_moved,why_moved,status_after_moved,moved_memo,who_wrote_this,when_wrote_this
+1,1,2025-01-02 10:00:00,testuser,テスト移動,テスト場所に設置,テスト移動メモ,testuser,2025-03-21 09:09:27.439974
