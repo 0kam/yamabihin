@@ -2,15 +2,18 @@
 メインとなるソフトウェア。備品の動きを管理する。
 購入者、品目、メーカー、機種名、目的、購入後の設置場所や管理者の変遷を辿れる機能をつける。
 
+**また、備品登録および備品移動の際に写真を複数枚登録できる機能を追加しました。写真登録は任意です。**
+
 ## データベース
 以下のような２つのDBを持ち、bihin_idで結合できるようにしておく。
 1. bihin
-bihin_id, type, vendor, model_name, serial_number, who_bought, when_bought, why_bought, bought_memo, who_wrote_this, when_wrote_this
+bihin_id, type, vendor, model_name, serial_number, who_bought, when_bought, why_bought, bought_memo, photos, who_wrote_this, when_wrote_this, bihin_photo_paths
 
 2. movement
-bihin_id, when_moved, who_moved, why_moved, status_after_moved, moved_memo , who_wrote_this
+bihin_id, when_moved, who_moved, why_moved, status_after_moved, moved_memo, photos, who_wrote_this, when_wrote_this, movement_photo_paths
 
 ## UI
+### 備品登録
 トップページは備品のリストを表形式で表示する。表の並び順はデフォルトでtype別とし、追加日でも並び替えられるようにする。
 表の一番上に、新しい備品を追加するためのボタンを配置し、そこをタップすると備品情報の入力画面に遷移する。備品情報の入力方式は以下に従うようにする。全部入力したら「完了」ボタンを押す。
 - id: 自動的に作成。連番で良い。
@@ -24,4 +27,58 @@ bihin_id, when_moved, who_moved, why_moved, status_after_moved, moved_memo , who
 - why_bought: 表示名は「購入目的」。自由入力。
 - bought_memo: 表示名は「メモ」。自由入力。
 - who_wrote_this: 自動的に作成。入力しているユーザー名を使用。
-- when_wrote_this 自動的に作成。入力した日付を使う。
+- when_wrote_this: 登録日時。自動的に作成。入力した日付を使う。
+- bihin_photo_paths: ユーザーが写真をアップロードした際に写真へのパスが保存される
+
+### 備品並び替え、検索、閲覧、編集、削除
+- 備品は備品タイプ、購入者、購入時期、登録日時で並び替えられるようにする。
+- 備品名で検索できるようにする。
+- 備品はあとから編集・削除できるようにする。編集した場合はwho_wrote_thisを更新する
+- 備品の詳細について閲覧できるようにする。特に写真表示機能をつける。
+
+## 移動履歴登録
+登録している備品に対して、移動履歴を登録・閲覧・編集することができる。
+
+- bihin_id: 備品のidと同じ
+- movement_id: 移動履歴のid。自動入力
+- who_moved: 表示名は「移動者」。自由入力。
+- when_moved: 表示名は「移動日」。年月日をカレンダーで入力。
+- where_moved: 表示名は「移動エリア」。選択式。「その他」を選択した場合は自由入力を受け付ける。入力後、「システムに登録」ボタンを押し、「本当にこの名前でエリア登録しますか？」に対して「はい」と答えた場合、新しいエリア名として使えるようにする。以下が可能な選択肢。この順番で表示する。
+    - 知床
+    - 大雪山
+    - 早池峰
+    - 飯豊山
+    - 南三陸
+    - 白山
+    - 爺ヶ岳
+    - 立山
+    - 蝶ヶ岳・常念岳
+    - 根子岳
+    - 北岳
+    - 南ア(井川)
+    - 富士山
+    - 相模川流域
+    - 筑波大
+    - 北海道大
+    - 東邦大
+    - 国環研
+    - 岩手県博
+    - 飯豊を愛する会
+    - 十山
+    - その他
+- where_moved_detail: 表示名は「移動場所の詳細」。自由記述。
+- why_moved: 表示名は「移動目的」。自由入力。オプション。
+- movement_memo: 表示名は「メモ」。自由入力。
+- who_wrote_this: 自動的に作成。入力しているユーザー名を使用。
+- when_wrote_this: 登録日時。自動的に作成。入力した日付を使う。
+- movement_photo_paths: ユーザーが写真をアップロードした際に写真へのパスが保存される
+
+## 写真登録機能
+- 備品登録時および移動履歴登録時に、写真を複数枚登録できる。
+- 写真の登録は任意で、以下のファイル形式に対応させる：JPEG、PNG、GIF
+- 登録された備品の詳細画面および移動履歴の詳細画面に写真が表示される。
+- 不要な写真は個別に削除することができる。
+- 写真の解像度はアップロード時に自動的にリサイズする（長辺が1200pxより大きかった場合、アスペクト比を保ったまま長辺が1200pxになるようにする）。
+
+## CSVエクスポート
+- 自動エクスポート機能もつけるが、備品DBと移動履歴DBをCSVとしてエクスポートするボタンもつける。
